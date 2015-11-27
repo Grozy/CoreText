@@ -35,15 +35,27 @@
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
     dictionary[(id)kCTForegroundColorAttributeName] = (id)[UIColor blackColor].CGColor;
     [attributedString addAttributes:dictionary range:NSMakeRange(0, 3)];
+    
+    NSString *taobaoImageName = @"haha.png";
+    
+    
+    CTRunDelegateCallbacks callbacks;
+    memset(&callbacks, 0, sizeof(CTRunDelegateCallbacks));
+    callbacks.version = kCTRunDelegateVersion1;
+    callbacks.getAscent = ascentCallback;
+    callbacks.getDescent = descentCallback;
+    callbacks.getWidth = widthCallback;
+    CTRunDelegateRef delegate = CTRunDelegateCreate(&callbacks, dict);
+    NSMutableAttributedString *imageAttributedString = [[NSMutableAttributedString alloc] initWithString:@" "];//空格用于给图片留位置
+    [imageAttributedString addAttribute:(NSString *)kCTRunDelegateAttributeName value:(__bridge id)delegate range:NSMakeRange(0, 1)];
+    CFRelease(delegate);
+    
+    [imageAttributedString addAttribute:@"imageName" value:taobaoImageName range:NSMakeRange(0, 1)];
+    
+    [attributedString insertAttributedString:imageAttributedString atIndex:1];
     //添加解析
     
-//    CTRunDelegateCallbacks callbacks;
-//    memset(&callbacks, 0, sizeof(CTRunDelegateCallbacks));
-//    callbacks.version = kCTRunDelegateVersion1;
-//    callbacks.getAscent = ascentCallback;
-//    callbacks.getDescent = descentCallback;
-//    callbacks.getWidth = widthCallback;
-//    CTRunDelegateRef delegate = CTRunDelegateCreate(&callbacks, (__bridge void *)(dict));
+
 //    
 //    // 使用 0xFFFC 作为空白的占位符
 //    unichar objectReplacementChar = 0xFFFC;
@@ -67,6 +79,11 @@
 //    NSAttributedString *imageAttributedString = [NSAttributedString attributedStringWithAttachment:imageAttachment];
 //    [attributedString insertAttributedString:imageAttributedString atIndex:1];
     return attributedString;
+}
+
+void dict()
+{
+    
 }
 
 static CGFloat ascentCallback(void *ref){
